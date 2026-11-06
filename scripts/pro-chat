@@ -19,6 +19,8 @@ trap 'exit 129' HUP
 # A digest gives each model its own screen session, avoiding punctuation collisions.
 digest=$(printf '%s' "$model" | /usr/bin/shasum -a 256)
 session="local-ai-${digest:0:16}"
+# The remote+= parts below are single-quoted on purpose: $ollama_bin, $model and
+# $session must expand on the Pro's shell, not locally (ShellCheck SC2016 is expected).
 remote="model='$model'; session='$session'; "
 remote+='ollama_bin=$(command -v ollama || true); '
 remote+='if test -z "$ollama_bin"; then for p in "$HOME/.local/bin/ollama" /usr/local/bin/ollama /opt/homebrew/bin/ollama /Applications/Ollama.app/Contents/Resources/ollama "$HOME/Applications/Ollama.app/Contents/Resources/ollama"; do if test -x "$p"; then ollama_bin=$p; break; fi; done; fi; '
